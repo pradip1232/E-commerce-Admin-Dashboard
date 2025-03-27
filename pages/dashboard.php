@@ -1,3 +1,8 @@
+
+<?php
+include 'config/db_con.php';
+?>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -49,7 +54,15 @@
                     <div class="col-8">
                         <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
                             Total Products</div>
-                        <div class="h5 mb-0 font-weight-bold text-white">1,234</div>
+                        <div class="h5 mb-0 font-weight-bold text-white">
+                            <?php
+                                // Fetch total products from the database
+                                $query = "SELECT COUNT(*) as total FROM products"; // Assuming 'products' is the table name
+                                $result = mysqli_query($conn, $query);
+                                $data = mysqli_fetch_assoc($result);
+                                echo $data['total'];
+                            ?>
+                        </div>
                         <div class="mt-2 text-xs text-white">
                             <i class="fas fa-arrow-up"></i> 1.25%
                         </div>

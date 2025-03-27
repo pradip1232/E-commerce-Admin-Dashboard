@@ -199,11 +199,11 @@ include 'config/db_con.php';
                                     <td><textarea class="form-control" id="productBenefits" rows="1" name="productBenefits" required></textarea></td>
                                     <td><textarea class="form-control" id="productUsage" rows="1" name="productUsage" required></textarea></td>
                                     <td>
-                                        <input type="file" class="form-control" id="productImages" name="productImages" multiple accept="image/*">
+                                        <input type="file" class="form-control" id="productImages" name="productImages" multiple accept="image/*" required>
                                         <small class="text-muted">Upload images</small>
                                     </td>
                                     <td>
-                                        <input type="file" class="form-control" id="productVideos" name="productVideos" multiple accept="video/*">
+                                        <input type="file" class="form-control" id="productVideos" name="productVideos" multiple accept="video/*" required>
                                         <small class="text-muted">Upload videos</small>
                                     </td>
                                     <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
@@ -271,11 +271,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><textarea class="form-control" id="productBenefits" name="productBenefits" rows="1" required></textarea></td>
                 <td><textarea class="form-control" id="productUsage" name="productUsage" rows="1" required></textarea></td>
                 <td>
-                    <input type="file" class="form-control" id="productImages" name="productImages" multiple accept="image/*">
+                    <input type="file" class="form-control" id="productImages" name="productImages" multiple accept="image/*" required>
                     <small class="text-muted">Upload images</small>
                 </td>
                 <td>
-                    <input type="file" class="form-control" id="productVideos" name="productVideos" multiple accept="video/*">
+                    <input type="file" class="form-control" id="productVideos" name="productVideos" multiple accept="video/*" required>
                     <small class="text-muted">Upload videos</small>
                 </td>
                 <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
@@ -318,11 +318,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><textarea class="form-control" name="productBenefits" id="productBenefits" rows="1" required></textarea></td>
                 <td><textarea class="form-control" name="productUsage" id="productUsage" rows="1" required></textarea></td>
                 <td>
-                    <input type="file" class="form-control" name="productImages" id="productImages" multiple accept="image/*">
+                    <input type="file" class="form-control" name="productImages" id="productImages" multiple accept="image/*" required>
                     <small class="text-muted">Upload images</small>
                 </td>
                 <td>
-                    <input type="file" class="form-control" name="productVideos" id="productVideos" multiple accept="video/*">
+                    <input type="file" class="form-control" name="productVideos" id="productVideos" multiple accept="video/*" required>
                     <small class="text-muted">Upload videos</small>
                 </td>
                 <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
@@ -359,6 +359,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const description = row.querySelector('textarea[name="description"]');
             const product_benefits = row.querySelector('textarea[name="productBenefits"]');
             const product_usage = row.querySelector('textarea[name="productUsage"]');
+            const product_images = row.querySelector('input[name="productImages"]');
+            const product_videos = row.querySelector('input[name="productVideos"]');
 
             // Log the values of each field
             console.log("Field values:");
@@ -373,6 +375,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Product Benefits:", product_benefits ? product_benefits.value : "Not found");
             console.log("Product Usage:", product_usage ? product_usage.value : "Not found");
 
+            // Collect only the filenames for images and videos
+            const imageFiles = Array.from(product_images.files).map(file => file.name);
+            const videoFiles = Array.from(product_videos.files).map(file => file.name);
+
             // Check if elements exist before accessing their values
             if (product_id && product_sku && product_name && product_category && hsn_number && tax_rate && key_benefits && description && product_benefits && product_usage) {
                 products.push({
@@ -385,13 +391,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     key_benefits: key_benefits.value,
                     description: description.value,
                     product_benefits: product_benefits.value,
-                    product_usage: product_usage.value,
-                    images: [], // Collect image file names if you implement file upload
-                    videos: []  // Collect video file names if you implement file upload
+                    product_usage: product_usage.value, 
+                    images: imageFiles, // Collect only filenames
+                    videos: videoFiles   // Collect only filenames
                 });
                 console.log(`Row ${index + 1} data added to products array.`);
             } else {
                 console.error(`Row ${index + 1}: One or more fields are missing.`);
+                // Log missing fields
                 if (!product_id) console.error("Missing product_id");
                 if (!product_sku) console.error("Missing product_sku");
                 if (!product_name) console.error("Missing product_name");
