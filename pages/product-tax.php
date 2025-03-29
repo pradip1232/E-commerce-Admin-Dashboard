@@ -1,6 +1,6 @@
 <div class="container mt-5">
     <h2>Product Tax Management</h2>
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTaxModal">Add New Tax</button>
+    <!-- <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTaxModal">Add New Tax</button> -->
 
     <h3 class="mt-5">Taxes</h3>
     <input type="text" id="searchTax" class="form-control mb-3" placeholder="Search Taxes...">

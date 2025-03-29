@@ -20,11 +20,16 @@
                 <i class="fas fa-tags"></i> Product Categories
             </a>
         </li>
-        <li class="<?php echo ($page == 'product-tax') ? 'active' : ''; ?>">
+        <li class="<?php echo ($page == 'inventory') ? 'active' : ''; ?>">
+            <a href="index.php?page=inventory">
+                <i class="fas fa-tags"></i> Inventory
+            </a>
+        </li>
+        <!-- <li class="<?php echo ($page == 'product-tax') ? 'active' : ''; ?>">
             <a href="index.php?page=product-tax">
                 <i class="fas fa-tags"></i> Product Tax
             </a>
-        </li>
+        </li> -->
 
         <li class="<?php echo ($page == 'subadmin') ? 'active' : ''; ?>">
             <a href="index.php?page=subadmin">
