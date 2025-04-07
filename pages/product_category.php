@@ -4,19 +4,25 @@
 
     <h3 class="mt-5">Categories</h3>
     <input type="text" id="search" class="form-control mb-3" placeholder="Search Categories...">
-    <table class="table table-bordered">
+    <table id="categoriesTable" class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Category Name</th>
-                <th>Sub Category Name</th>
-                <th>Actions</th>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
-        <tbody id="categoryTableBody">
-            <!-- Dynamic content will be inserted here -->
+        <tbody>
+            <!-- JS will populate this -->
         </tbody>
     </table>
+
+
+
+
+
     <nav aria-label="Page navigation">
         <ul class="pagination" id="pagination">
             <!-- Pagination links will be inserted here -->
@@ -53,44 +59,76 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    loadCategories();
+    document.addEventListener('DOMContentLoaded', function() {
+        loadCategories();
 
-    // Load categories with pagination
-    function loadCategories(page = 1) {
-        fetch(`config/get_categories.php?page=${page}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('categoryTableBody').innerHTML = data.categories;
-                document.getElementById('pagination').innerHTML = data.pagination;
-            })
-            .catch(error => {
-                console.error('Error loading categories:', error);
-            });
-    }
+        function loadCategories() {
+            fetch('config/get_categories.php') // No ?page since pagination is removed
+                .then(response => response.json())
+                .then(data => {
+                    const categories = data.categories;
+                    console.log("Categories", categories);
 
+                    const tableBody = document.getElementById('categoriesTable').tBodies[0];
+                    tableBody.innerHTML = '';
+
+                    categories.forEach(category => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${category.category_id}</td>
+                            <td>${category.category_name}</td>
+                            <td>${category.sub_category_name}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary editCategory" 
+                                    data-id="${category.category_id}"
+                                    data-name="${category.category_name}" 
+                                    data-subcategory="${category.sub_category_name}">
+                                    Edit
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger deleteCategory" 
+                                    data-id="${category.category_id}">
+                                    Delete
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading categories:', error);
+                });
+        }
+    });
+</script>
+
+<script>
     // Add category
     document.getElementById('saveCategory').addEventListener('click', function() {
         const categoryName = document.getElementById('categoryName').value;
         const subCategoryName = document.getElementById('subCategoryName').value;
 
         fetch('config/save_category.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({ categoryName, subCategoryName })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            loadCategories();
-            document.getElementById('categoryForm').reset();
-            $('#addCategoryModal').modal('hide');
-        })
-        .catch(() => {
-            alert('Error adding category.');
-        });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    categoryName,
+                    subCategoryName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadCategories();
+                document.getElementById('categoryForm').reset();
+                $('#addCategoryModal').modal('hide');
+            })
+            .catch(() => {
+                alert('Error adding category.');
+            });
     });
 
     // Search categories
@@ -102,5 +140,4 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('categoryTableBody').innerHTML = data;
             });
     });
-});
 </script>

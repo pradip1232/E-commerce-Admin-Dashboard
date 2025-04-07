@@ -3,7 +3,7 @@ include 'config/db_con.php'; ?>
 
 
 
-<button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addInventoryModal">Add New Inventory</button>
+<button class="btn btn-success mb-3 float-right text-right" data-bs-toggle="modal" data-bs-target="#addInventoryModal">Add New Inventory</button>
 
 
 <div class="table-responsive">
@@ -34,7 +34,7 @@ include 'config/db_con.php'; ?>
                 // Output data of each row
                 while($row = $result->fetch_assoc()) {
                     echo "<tr>
-                        <td>{$row['product_id']}</td>
+                       
                         <td>{$row['product_name']}</td>
                         <td>{$row['custom_batch_name']}</td>
                         <td>{$row['mrp']}</td>

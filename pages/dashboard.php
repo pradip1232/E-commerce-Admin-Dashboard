@@ -18,7 +18,7 @@ include 'config/db_con.php';
                     <div class="col-8">
                         <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
                             Total Sales</div>
-                        <div class="h5 mb-0 font-weight-bold text-white">$40,000</div>
+                        <div class="h5 mb-0 font-weight-bold text-white">40,000</div>
                         <div class="mt-2 text-xs text-white">
                             <i class="fas fa-arrow-up"></i> 3.48%
                         </div>
@@ -118,7 +118,7 @@ include 'config/db_con.php';
                                     <td>#12345</td>
                                     <td>John Doe</td>
                                     <td>Product A</td>
-                                    <td>$150</td>
+                                    <td>150</td>
                                     <td><span class="badge bg-success">Completed</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-primary">View</button>
@@ -128,7 +128,7 @@ include 'config/db_con.php';
                                     <td>#12346</td>
                                     <td>Jane Smith</td>
                                     <td>Product B</td>
-                                    <td>$200</td>
+                                    <td>200</td>
                                     <td><span class="badge bg-warning">Pending</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-primary">View</button>
