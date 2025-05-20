@@ -1,6 +1,7 @@
 <?php
 include 'config/db_con.php';
 ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="container-fluid">
     <div class="row">
@@ -35,6 +36,7 @@ include 'config/db_con.php';
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Status</th>
+                                    <th>Enable/Disable</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -55,27 +57,36 @@ include 'config/db_con.php';
                                         echo "<td>" . (isset($row['product_price']) ? $row['product_price'] : 'NA') . "</td>";
                                         echo "<td>" . (isset($row['product_stock']) ? $row['product_stock'] : 'NA') . "</td>";
                                         echo "<td>" . (isset($row['product_status']) ? $row['product_status'] : 'NA') . "</td>";
+                                        echo "<td>
+                                                    <div class='form-check form-switch'>
+                                                        <input class='form-check-input toggle-status' 
+                                                            type='checkbox' 
+                                                            data-id='" . $row['product_id'] . "' 
+                                                            " . ($row['product_status'] == 'enabled' ? 'checked' : '') . ">
+                                                    </div>
+                                                </td>";
+
                                         echo "<td>";
                                         // Edit Button
-                                        echo "<a href='#' 
-                                    class='btn btn-sm btn-primary editProductBtn' 
-                                    data-id='" . $row['product_id'] . "' 
-                                    data-name='" . $row['product_name'] . "' 
-                                    
-                                    data-bs-toggle='modal' 
-                                    data-bs-target='#editProductModal'>
-                                    Edit
-                                    </a>";
+                                        //     echo "<a href='#' 
+                                        // class='btn btn-sm btn-primary editProductBtn' 
+                                        // data-id='" . $row['product_id'] . "' 
+                                        // data-name='" . $row['product_name'] . "' 
+
+                                        // data-bs-toggle='modal' 
+                                        // data-bs-target='#editProductModal'>
+                                        // Edit
+                                        // </a>";
 
                                         // Delete Button
-                                        echo "<a href='#' 
-                                    class='btn btn-sm btn-danger deleteProductBtn' 
-                                    data-id='" . $row['product_id'] . "' 
-                                    data-name='" . $row['product_name'] . "' 
-                                    data-bs-toggle='modal' 
-                                    data-bs-target='#deleteProductModal'>
-                                    Delete
-                                    </a>";
+                                        //     echo "<a href='#' 
+                                        // class='btn btn-sm btn-danger deleteProductBtn' 
+                                        // data-id='" . $row['product_id'] . "' 
+                                        // data-name='" . $row['product_name'] . "' 
+                                        // data-bs-toggle='modal' 
+                                        // data-bs-target='#deleteProductModal'>
+                                        // Delete
+                                        // </a>";
 
 
                                         echo "</td>";
@@ -161,6 +172,54 @@ include 'config/db_con.php';
 
 
 
+
+
+
+
+<!-- product status enable or disable  -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.toggle-status').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const productId = this.dataset.id;
+                console.log("productid", productId);
+                const newStatus = this.checked ? 'enabled' : 'disabled';
+
+                fetch('config/update_product_status.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: productId,
+                            status: newStatus
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log(`Product ID ${productId} updated to ${newStatus}`);
+                        } else {
+                            alert('Failed to update product status.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
 <!-- Full Screen Add Product Modal -->
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="max-width: 95%; margin: auto;">
@@ -214,14 +273,27 @@ include 'config/db_con.php';
                                     </td>
                                     <td><input type="text" class="form-control" id="hsnNumber" required></td>
                                     <td>
-                                        <select class="form-select" id="taxRate" required>
+                                        <select class="form-select" id="taxRate" name="taxRate" required>
                                             <option value="">Select Tax Rate</option>
-                                            <option value="0">0%</option>
-                                            <option value="5">5%</option>
-                                            <option value="12">12%</option>
-                                            <option value="18">18%</option>
-                                            <option value="28">28%</option>
+                                            <?php
+                                            $taxQuery = $conn->query("SELECT tax_rate FROM tax_rates");
+
+                                            if ($taxQuery && $taxQuery->num_rows > 0) {
+                                                while ($taxRow = $taxQuery->fetch_assoc()) {
+                                                    $rate = htmlspecialchars($taxRow['tax_rate']);
+                                                    echo "<option value=\"$rate\">$rate%</option>";
+                                                }
+                                            } else {
+                                                // Optional fallback if no dynamic data found
+                                                echo '<option value="0">0%</option>';
+                                                echo '<option value="5">5%</option>';
+                                                echo '<option value="12">12%</option>';
+                                                echo '<option value="18">18%</option>';
+                                                echo '<option value="28">28%</option>';
+                                            }
+                                            ?>
                                         </select>
+
                                     </td>
                                     <td><textarea class="form-control" id="keyBenefits" name="keyBenefits" rows="1" required></textarea></td>
                                     <td><textarea class="form-control" id="description" name="description" rows="1" required></textarea></td>
@@ -296,13 +368,25 @@ include 'config/db_con.php';
                 <td><input type="text" class="form-control" id="hsnNumber" name="hsnNumber" required></td>
                 <td>
                     <select class="form-select" id="taxRate" name="taxRate" required>
-                        <option value="">Select Tax Rate</option>
-                        <option value="0">0%</option>
-                        <option value="5">5%</option>
-                        <option value="12">12%</option>
-                        <option value="18">18%</option>
-                        <option value="28">28%</option>
-                    </select>
+                                            <option value="">Select Tax Rate</option>
+                                            <?php
+                                            $taxQuery = $conn->query("SELECT tax_rate FROM tax_rates");
+
+                                            if ($taxQuery && $taxQuery->num_rows > 0) {
+                                                while ($taxRow = $taxQuery->fetch_assoc()) {
+                                                    $rate = htmlspecialchars($taxRow['tax_rate']);
+                                                    echo "<option value=\"$rate\">$rate%</option>";
+                                                }
+                                            } else {
+                                                // Optional fallback if no dynamic data found
+                                                echo '<option value="0">0%</option>';
+                                                echo '<option value="5">5%</option>';
+                                                echo '<option value="12">12%</option>';
+                                                echo '<option value="18">18%</option>';
+                                                echo '<option value="28">28%</option>';
+                                            }
+                                            ?>
+                                        </select>
                 </td>
                 <td><textarea class="form-control" id="keyBenefits" name="keyBenefits" rows="1" required></textarea></td>
                 <td><textarea class="form-control" id="description" name="description" rows="1" required></textarea></td>
@@ -351,30 +435,42 @@ include 'config/db_con.php';
                 </td>
                 <td><input type="text" class="form-control" name="hsnNumber" id="hsnNumber" required></td>
                 <td>
-                    <select class="form-select" name="taxRate" id="taxRate" required>
-                        <option value="">Select Tax Rate</option>
-                        <option value="0">0%</option>
-                        <option value="5">5%</option>
-                        <option value="12">12%</option>
-                        <option value="18">18%</option>
-                        <option value="28">28%</option>
-                    </select>
-                </td>
-                <td><textarea class="form-control" name="keyBenefits" id="keyBenefits" rows="1" required></textarea></td>
-                <td><textarea class="form-control" name="description" id="description" rows="1" required></textarea></td>
-                <td><textarea class="form-control" name="productBenefits" id="productBenefits" rows="1" required></textarea></td>
-                <td><textarea class="form-control" name="productUsage" id="productUsage" rows="1" required></textarea></td>
-                <td>
-                    <input type="file" class="form-control" name="productImages" id="productImages" multiple accept="image/*" required>
-                    <small class="text-muted">Upload images</small>
-                </td>
-                <td>
-                    <input type="file" class="form-control" name="productVideos" id="productVideos" multiple accept="video/*" required>
-                    <small class="text-muted">Upload videos</small>
-                </td>
-                <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
-            </tr>
-        `;
+                     <select class="form-select" id="taxRate" name="taxRate" required>
+                                            <option value="">Select Tax Rate</option>
+                                            <?php
+                                            $taxQuery = $conn->query("SELECT tax_rate FROM tax_rates");
+
+                                            if ($taxQuery && $taxQuery->num_rows > 0) {
+                                                while ($taxRow = $taxQuery->fetch_assoc()) {
+                                                    $rate = htmlspecialchars($taxRow['tax_rate']);
+                                                    echo "<option value=\"$rate\">$rate%</option>";
+                                                }
+                                            } else {
+                                                // Optional fallback if no dynamic data found
+                                                echo '<option value="0">0%</option>';
+                                                echo '<option value="5">5%</option>';
+                                                echo '<option value="12">12%</option>';
+                                                echo '<option value="18">18%</option>';
+                                                echo '<option value="28">28%</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                                </td>
+                                                <td><textarea class="form-control" name="keyBenefits" id="keyBenefits" rows="1" required></textarea></td>
+                                                <td><textarea class="form-control" name="description" id="description" rows="1" required></textarea></td>
+                                                <td><textarea class="form-control" name="productBenefits" id="productBenefits" rows="1" required></textarea></td>
+                                                <td><textarea class="form-control" name="productUsage" id="productUsage" rows="1" required></textarea></td>
+                                                <td>
+                                                    <input type="file" class="form-control" name="productImages" id="productImages" multiple accept="image/*" required>
+                                                    <small class="text-muted">Upload images</small>
+                                                </td>
+                                                <td>
+                                                    <input type="file" class="form-control" name="productVideos" id="productVideos" multiple accept="video/*" required>
+                                                    <small class="text-muted">Upload videos</small>
+                                                </td>
+                                                <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
+                                            </tr>
+                                        `;
             document.getElementById('productRows').insertAdjacentHTML('beforeend', newRow);
         });
 

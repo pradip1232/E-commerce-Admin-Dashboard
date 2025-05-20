@@ -14,7 +14,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 // echo "<br>";
 
 // Prepare the SQL statement
-$stmt = $conn->prepare("INSERT INTO inventory (product_id, product_name, custom_batch_name, mrp, discount, selling_price, stock_quantity, packagingwithunit, manufacturing_date, expiration_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO inventory ( inventory_number, date_uploaded, party_name, billing_number, product_id, product_name, custom_batch_name, mrp, discount, selling_price, stock_quantity, packagingwithunit, manufacturing_date, expiration_date) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 // Check if the statement was prepared successfully
 if (!$stmt) {
@@ -23,7 +23,7 @@ if (!$stmt) {
 }
 
 // Bind parameters
-$stmt->bind_param("sssdidsiss", $productId, $productName, $customBatchName, $mrp, $discount, $sellingPrice, $stockQuantity, $packagingwithunit, $manufacturingDate, $expirationDate);
+$stmt->bind_param("sssssssdidsiss", $inventory_number, $inventoryDate, $party_name, $billing_number, $productId, $productName, $customBatchName, $mrp, $discount, $sellingPrice, $stockQuantity, $packagingwithunit, $manufacturingDate, $expirationDate);
 
 // Loop through each inventory item and insert into the database
 foreach ($data as $item) {
@@ -37,6 +37,10 @@ foreach ($data as $item) {
     $packagingwithunit = $item['packagingwithunit'];
     $manufacturingDate = $item['manufacturingDate'];
     $expirationDate = $item['expirationDate'];
+    $inventory_number = $item['inventoryNumber'];
+    $date_uploaded = $item['inventoryDate'];
+    $party_name = $item['partyName'];
+    $billing_number = $item["billingNumber"];
 
     // Debugging: Print the values being inserted
     // echo "Inserting: ";
@@ -55,4 +59,3 @@ $conn->close();
 
 // Return success message
 echo json_encode(['message' => 'Inventory saved successfully.']);
-?>

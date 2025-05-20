@@ -18,13 +18,13 @@
                     <div class="col-8">
                         <div class="text-xs font-weight-bold text-white text-uppercase mb-1">
                             Total Revenue</div>
-                        <div class="h5 mb-0 font-weight-bold text-white">$45,000</div>
+                        <div class="h5 mb-0 font-weight-bold text-white">45,000</div>
                         <div class="mt-2 text-xs text-white">
                             <i class="fas fa-arrow-up"></i> 4.5%
                         </div>
                     </div>
                     <div class="col-4">
-                        <i class="fas fa-dollar-sign fa-2x text-white"></i>
+                        <!-- <i class="fas fa-dollar-sign fa-2x text-white"></i> -->
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                                 <tr>
                                     <td>#INV-001</td>
                                     <td>John Doe</td>
-                                    <td>$1,500</td>
+                                    <td>1,500</td>
                                     <td>2024-02-20</td>
                                     <td><span class="badge bg-success">Paid</span></td>
                                     <td>
@@ -124,7 +124,7 @@
                                 <tr>
                                     <td>#INV-002</td>
                                     <td>Jane Smith</td>
-                                    <td>$2,300</td>
+                                    <td>2,300</td>
                                     <td>2024-02-19</td>
                                     <td><span class="badge bg-warning">Pending</span></td>
                                     <td>
